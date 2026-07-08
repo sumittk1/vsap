@@ -23,12 +23,37 @@ export default function ContactFormSection({
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+    
+    const formData = new FormData(e.currentTarget);
+    const serviceName = formData.get("service") ? `Service Interest: ${formData.get("service")}` : "";
+    const userMessage = formData.get("message") as string;
+    const combinedMessage = [userMessage, serviceName].filter(Boolean).join("\n\n");
+
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      company: formData.get("business") as string,
+      phone: formData.get("phone") as string,
+      message: combinedMessage || "No message provided.",
+      source: "general",
+    };
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to submit lead");
       router.push("/thank-you");
-    }, 600);
+    } catch (error) {
+      console.error("Error submitting lead:", error);
+      alert("There was an error sending your message. Please try again.");
+      setSubmitting(false);
+    }
   }
 
   const inputClass =

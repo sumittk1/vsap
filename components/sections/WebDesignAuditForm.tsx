@@ -9,12 +9,30 @@ export default function WebDesignAuditForm() {
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+
+    const data = {
+      name: "Web Design Lead",
+      email: email,
+      message: "Requested a free website audit.",
+      source: "web-design",
+    };
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to submit lead");
       router.push("/thank-you");
-    }, 600);
+    } catch (error) {
+      console.error("Error submitting lead:", error);
+      alert("There was an error sending your request. Please try again.");
+      setSubmitting(false);
+    }
   }
 
   return (

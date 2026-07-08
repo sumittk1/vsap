@@ -8,12 +8,31 @@ export default function GoogleAdsContactForm() {
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      message: (formData.get("message") as string) || "Interested in Google Ads services.",
+      source: "google-ads",
+    };
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to submit lead");
       router.push("/thank-you");
-    }, 600);
+    } catch (error) {
+      console.error("Error submitting lead:", error);
+      alert("There was an error sending your message. Please try again.");
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -24,6 +43,7 @@ export default function GoogleAdsContactForm() {
         </label>
         <input
           id="contact-name"
+          name="name"
           type="text"
           required
           className="w-full rounded-[8px] border border-black/80 bg-white px-4 py-3 text-base focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 transition-colors min-h-[48px]"
@@ -36,6 +56,7 @@ export default function GoogleAdsContactForm() {
         </label>
         <input
           id="contact-email"
+          name="email"
           type="email"
           required
           className="w-full rounded-[8px] border border-black/80 bg-white px-4 py-3 text-base focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 transition-colors min-h-[48px]"
@@ -48,6 +69,7 @@ export default function GoogleAdsContactForm() {
         </label>
         <textarea
           id="contact-message"
+          name="message"
           rows={4}
           placeholder="Tell us more"
           className="w-full rounded-[8px] border border-black/80 bg-white px-4 py-3 text-base focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 transition-colors min-h-[48px]"

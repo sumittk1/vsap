@@ -12,6 +12,7 @@ import { Testimonials } from './collections/Testimonials'
 import { BlogPosts } from './collections/BlogPosts'
 import { Industries } from './collections/Industries'
 import { Locations } from './collections/Locations'
+import { Leads } from './collections/Leads'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -32,6 +33,7 @@ export default buildConfig({
     BlogPosts,
     Industries,
     Locations,
+    Leads,
   ],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'your-fallback-secret-here-for-local-dev',
