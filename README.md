@@ -8,8 +8,7 @@ A production-ready marketing website for VASP Digital, built from the provided F
 - **Tailwind CSS v4**
 - **Framer Motion** — scroll reveals, page transitions, mega menu, mobile nav, count-up stats
 - **Lenis** — smooth scrolling
-- **Lucide React** — icons
-
+- **Lucide React** — icons.
 ## Getting started
 
 ```bash
